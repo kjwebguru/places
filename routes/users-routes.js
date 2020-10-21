@@ -1,28 +1,27 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-
+const { check } = require("express-validator");
 const router = express.Router();
+const usersController = require("../controllers/users-controller");
 
-const DUMMY_DATA = [
-  {
-    id: "p1",
-    title: "Empire State Building",
-    description: "One of the most famous sky scrapers in the world!",
-    location: {
-      lat: 40.7484474,
-      lng: -73.98171516,
-    },
-    address: "20 W 34th St, New York, NY 10001",
-    creator: "u1",
-  },
-];
+router.get("/", usersController.getUsers);
 
-router.get("/:uid", (req, res, next) => {
-  const placeId = router.params.uid;
-  const place = DUMMY_DATA.find((p) => {
-    return p.id === placeId;
-  });
-  res.json({place});
-});
+router.post(
+  "/login",
+  [
+    check("email").normalizeEmail().isEmail().notEmpty(),
+    check("password").notEmpty(),
+  ],
+  usersController.login
+);
+
+router.post(
+  "/signup",
+  [
+    check("name").notEmpty(),
+    check("email").normalizeEmail().isEmail(),
+    check("password").isLength({ min: 6 }),
+  ],
+  usersController.signup
+);
 
 module.exports = router;

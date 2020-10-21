@@ -1,15 +1,18 @@
 const express = require("express");
 const placesRoutes = require("./routes/places-routes");
+const userRoutes = require("./routes/users-routes");
 const bodyParser = require("body-parser");
 const HttpError = require("./models/http-error");
 
 const placesEndpoint = "/api/places";
+const usersEndpoint = "/api/users";
 
 const app = express();
 
 app.use(bodyParser.json());
 
 app.use(placesEndpoint, placesRoutes);
+app.use(usersEndpoint, userRoutes);
 
 app.use((req, res, next) => {
   throw new HttpError("Could not find the route", 404);

@@ -1,5 +1,7 @@
 const HttpError = require("../models/http-error");
 
+const { validationResult } = require("express-validator");
+
 const uuid = require("uuid/v4");
 
 const noPlaceError = "Could not find a place with provided place id";
@@ -67,6 +69,12 @@ const getPlacesByUserId = (req, res, next) => {
 };
 
 const createPlaces = (req, res, next) => {
+  const error = validationResult(req);
+
+  if (!error.isEmpty()) {
+    throw new HttpError("Please enter valid input", 422);
+  }
+
   const { title, description, coordinates, address, creator } = req.body;
 
   const newPlace = {
@@ -101,6 +109,13 @@ const updatePlaces = (req, res, next) => {
 
 const deletePlaces = (req, res, next) => {
   const placeId = req.params.pid;
+  if (
+    !DUMMY_DATA.find((p) => {
+      return p.id === placeId;
+    })
+  ) {
+    throw new HttpError("Did not find place with this id", 404);
+  }
   DUMMY_DATA = DUMMY_DATA.filter((p) => {
     return p.id === placeId;
   });
