@@ -4,6 +4,8 @@ const { validationResult } = require("express-validator");
 
 const uuid = require("uuid/v4");
 
+const geoLocation = require("../utils/location");
+
 const noPlaceError = "Could not find a place with provided place id";
 
 const noUserPlaceError = "Could not find places with provided user id";
@@ -75,7 +77,9 @@ const createPlaces = (req, res, next) => {
     throw new HttpError("Please enter valid input", 422);
   }
 
-  const { title, description, coordinates, address, creator } = req.body;
+  const { title, description, address, creator } = req.body;
+
+  const coordinates = geoLocation(address);
 
   const newPlace = {
     id: uuid(),
