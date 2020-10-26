@@ -3,6 +3,13 @@ const placesRoutes = require("./routes/places-routes");
 const userRoutes = require("./routes/users-routes");
 const bodyParser = require("body-parser");
 const HttpError = require("./models/http-error");
+const mongoose = require("mongoose");
+const connectionUri =
+  "mongodb+srv://kjwebguru:webguruaccess@webguru0.eovgt.mongodb.net/places?retryWrites=true&w=majority";
+mongoose.set("useNewUrlParser", true);
+mongoose.set("useFindAndModify", false);
+mongoose.set("useCreateIndex", true);
+mongoose.set("useUnifiedTopology", true);
 
 const placesEndpoint = "/api/places";
 const usersEndpoint = "/api/users";
@@ -26,4 +33,9 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || "An unknown error occurred" });
 });
 
-app.listen(5000);
+mongoose
+  .connect(connectionUri)
+  .then(() => app.listen(5000))
+  .catch((err) => {
+    console.log(err);
+  });
