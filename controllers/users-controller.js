@@ -63,7 +63,7 @@ const signup = async (req, res, next) => {
     email,
     password,
     image: "https://ibb.co/7RgZtm8",
-    places: "empire state building",
+    places: [],
   });
 
   try {
